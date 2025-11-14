@@ -50,9 +50,19 @@ function logoutUser(req, res) {
     return res.json({ message: 'User logged out successfully' });
 }
 
+async function userDetails(req, res) {
+    const userId = req.user.userId;
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, username: true, email: true, role: true } });
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }   
+    return res.json({ user });
+}
+
 
 module.exports = {
     registerUser,
     loginUser,
     logoutUser,
+    userDetails,
 };
